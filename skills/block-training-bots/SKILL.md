@@ -1,5 +1,5 @@
 ---
-name: velvet-rope
+name: block-training-bots
 description: >-
   Remove AI training crawlers that do not help answer-engine optimization, and
   leave the crawlers that get a site cited. The remove list is GPTBot,
