@@ -6,8 +6,7 @@ description: >-
   ClaudeBot, Google-Extended, Applebot-Extended, CCBot, Amazonbot,
   meta-externalagent, Bytespider, Diffbot, AI2Bot, ImagesiftBot,
   MistralAI-Training, and Webzio-Extended. Use when the user mentions AEO,
-  AI crawlers, training bots, GPTBot, ClaudeBot, robots.txt, blocking scrapers,
-  or DNA by D3.
+  AI crawlers, training bots, GPTBot, ClaudeBot, robots.txt, or blocking scrapers.
 ---
 
 # Remove training crawlers
