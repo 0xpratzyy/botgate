@@ -1,4 +1,4 @@
-# debot
+# botgate
 
 An agent skill that sorts AI bots at your site's door. Crawlers that get you cited in ChatGPT, Claude, and Perplexity walk in. Crawlers that only scrape your pages for model training stay out.
 
@@ -22,16 +22,16 @@ GPTBot, ClaudeBot, Google-Extended, Applebot-Extended, CCBot, Amazonbot, meta-ex
 
 OAI-SearchBot, ChatGPT-User, Claude-SearchBot, Claude-User, PerplexityBot, Perplexity-User, DuckAssistBot, MistralAI-Index, MistralAI-User, Meta-WebIndexer, meta-externalfetcher, Google-Agent, Amzn-SearchBot, Amzn-User, Applebot, Googlebot, bingbot.
 
-The full tables, with what each block does and the ready-to-paste robots.txt, are in [skills/debot/SKILL.md](skills/debot/SKILL.md). The operators' live IP lists and signature keys are in [skills/debot/sources.md](skills/debot/sources.md).
+The full tables, with what each block does and the ready-to-paste robots.txt, are in [skills/botgate/SKILL.md](skills/botgate/SKILL.md). The operators' live IP lists and signature keys are in [skills/botgate/sources.md](skills/botgate/sources.md).
 
 ## Install
 
 Copy the skill folder into your agent's skills directory.
 
 ```sh
-git clone https://github.com/0xpratzyy/debot
-cp -r debot/skills/debot ~/.claude/skills/    # Claude Code
-cp -r debot/skills/debot ~/.cursor/skills/    # Cursor
+git clone https://github.com/0xpratzyy/botgate
+cp -r botgate/skills/botgate ~/.claude/skills/    # Claude Code
+cp -r botgate/skills/botgate ~/.cursor/skills/    # Cursor
 ```
 
 Then ask your agent something like "remove the AI training crawlers from this site".
