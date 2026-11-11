@@ -37,7 +37,7 @@ robots.txt matching is case-insensitive. Edge rules often are not, so match case
 | LAIONDownloader | LAION | Research datasets. Reported to ignore robots.txt. | Directory |
 | img2dataset | Anyone running the tool | Image dataset downloader. Only matches runs that kept this name. | Directory |
 | Sidetrade indexer bot | Sidetrade | Data extraction, including AI product training. | Directory |
-| __usage_ai-training | Shared preference | Not a crawler. A training opt-out signal some operators have said they will honor. | Proposal |
+| __usage_ai-training | Shared preference | Not a crawler. A training opt-out token from an IETF draft. The community list reports that Anthropic, OpenAI, and Google honor it. | Directory |
 
 ## Remove: scrape-for-hire tools and data vendors
 

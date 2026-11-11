@@ -44,10 +44,18 @@ These cost the owner something. Name the cost and let them choose.
 | ShapBot, TerraCotta | Search APIs that AI apps call to find and cite pages. |
 | AhrefsSiteAudit, SiteAuditBot, SemrushBot-SI, SemrushBot-SWA, SemrushBot-ESI, SplitSignalBot, RyteBot, rogerbot, lumar, deepcrawl, Oncrawl, similarweb, Screaming Frog SEO Spider | Audit bots. They only crawl a site when someone runs an audit on it, often the owner. Block them only if the owner uses none of these tools. |
 | AhrefsBot | On the default list. It also feeds Yep, Ahrefs' small search engine. |
+| SemrushBot | On the default list. Some robots.txt parsers match by prefix, so this rule can also stop the Semrush audit bots above. If the owner runs Semrush audits, add an explicit `Allow: /` group for the audit tokens they use. |
 
 ## Edge rules
 
-robots.txt only stops bots that choose to honor it. For every crawler in the default list, also block the user-agent token at the edge (firewall, CDN, or middleware). Match the token, not a whole browser string. `ISSCyberRiskCrawler` and `LAIONDownloader` are reported to ignore robots.txt, so the edge rule is the only one that works on them.
+robots.txt only stops bots that choose to honor it. For every crawler in the default list, also block the user-agent token at the edge (firewall, CDN, or middleware).
+
+Match the token as a whole word, case-insensitively. Do not match it as a loose substring:
+
+- `YaK` and `omgili` are short. A loose match on `yak` also hits unrelated apps.
+- `Diffbot` must not catch `Diffbot-User`, which is a person opening the page.
+- `SemrushBot` must not catch `SemrushBot-SI`, `SemrushBot-SWA`, or `SemrushBot-ESI` if the owner runs Semrush audits. Match `SemrushBot/` instead.
+ `ISSCyberRiskCrawler` and `LAIONDownloader` are reported to ignore robots.txt, so the edge rule is the only one that works on them.
 
 Skip the edge rule for `Applebot-Extended`, `Google-Extended`, and `__usage_ai-training`. They never appear in logs.
 

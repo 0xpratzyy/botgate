@@ -52,7 +52,7 @@ For bots that sign requests (HTTP Message Signatures).
 
 | Bot | Check |
 |---|---|
-| Googlebot | Reverse DNS to `googlebot.com` or `google.com`, then a forward lookup. |
+| Googlebot | Reverse DNS to `googlebot.com`, then a forward lookup. Google's special-case crawlers and user-triggered fetchers resolve to `google.com` or `googleusercontent.com`. |
 | YandexBot | Reverse DNS to `yandex.ru`, `yandex.net`, or `yandex.com`, then a forward lookup. |
 | Baiduspider | Reverse DNS to `*.baidu.com` or `*.baidu.jp`. |
 | MojeekBot | Reverse DNS to `*.mojeek.com`. |

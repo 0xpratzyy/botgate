@@ -66,6 +66,8 @@ User-agent: BuiltWith
 Disallow: /
 
 # 3. SEO and marketing crawlers that sell your data to other marketers
+# If you run Semrush audits on this site, add an Allow group for the
+# audit bot you use (SiteAuditBot, SemrushBot-SI, -SWA, -ESI).
 User-agent: AhrefsBot
 User-agent: SemrushBot
 User-agent: SemrushBot-BA
