@@ -49,8 +49,6 @@ A name list does not close a site to every bot. Scrapers that send an ordinary b
 
 Over the same 24 hours, the bots that send people or citations kept getting through, and still do: ChatGPT search 5,445 requests, Facebook link previews 5,197, Applebot 1,138, Meta AI search 847, Claude-User 597, Googlebot 111, Bing 68.
 
-What botgate did not fix there: the heaviest load came from a scraper fleet posing as ordinary Chrome, thousands of addresses. No name list can see that; a browser check on the busiest pages did.
-
 ## How it works
 
 When you ask your coding agent about AI crawlers, scrapers, robots.txt, or AEO, the skill tells it to:
