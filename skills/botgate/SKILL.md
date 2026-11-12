@@ -14,7 +14,7 @@ description: >-
 
 Sort every bot into one of two piles. A bot that sends visitors, citations, or link previews stays. A bot that only takes pages is removed.
 
-The ready-to-paste block list is [robots.txt](robots.txt). Every token, its operator, and what blocking it costs is in [bots.md](bots.md). IP lists and signature keys for the spoof check are in [sources.md](sources.md).
+The ready-to-paste block list is [robots.txt](robots.txt), and the matching edge rules are in [edge/](edge/). Every token, its operator, and what blocking it costs is in [bots.md](bots.md). IP lists and signature keys for the spoof check are in [sources.md](sources.md).
 
 ## What gets removed by default
 
@@ -48,16 +48,25 @@ These cost the owner something. Name the cost and let them choose.
 
 ## Edge rules
 
-robots.txt only stops bots that choose to honor it. For every crawler in the default list, also block the user-agent token at the edge (firewall, CDN, or middleware).
+robots.txt only stops bots that choose to honor it. Also block the same names at the edge, where the request is turned away before it reaches the site. `ISSCyberRiskCrawler` and `LAIONDownloader` are reported to ignore robots.txt, so the edge rule is the only thing that stops them.
 
-Match the token as a whole word, case-insensitively. Do not match it as a loose substring:
+Use the ready-made rules in [edge/](edge/). Do not write the match list by hand: they are generated from [robots.txt](robots.txt) by `node scripts/edge.mjs`, so the two never drift apart.
 
-- `YaK` and `omgili` are short. A loose match on `yak` also hits unrelated apps.
-- `Diffbot` must not catch `Diffbot-User`, which is a person opening the page.
-- `SemrushBot` must not catch `SemrushBot-SI`, `SemrushBot-SWA`, or `SemrushBot-ESI` if the owner runs Semrush audits. Match `SemrushBot/` instead.
- `ISSCyberRiskCrawler` and `LAIONDownloader` are reported to ignore robots.txt, so the edge rule is the only one that works on them.
+| Where the site runs | File | How to apply |
+|---|---|---|
+| Cloudflare (any plan) | [edge/cloudflare.txt](edge/cloudflare.txt) | Security → WAF → Custom rules → new rule, "Edit expression", paste, action Block. Or the Rulesets API: POST it as a rule with `"action": "block"` to the zone's `http_request_firewall_custom` entrypoint. One rule, about 3 KB, within the 4 KB limit. |
+| nginx | [edge/nginx.conf](edge/nginx.conf) | The `map` goes in `http {}`, the `if` in each `server {}`. |
+| Next.js (Vercel, Cloudflare, Node) | [edge/middleware.ts](edge/middleware.ts) | Save as `middleware.ts` at the app root. If one exists, merge the check into it. |
 
-Skip the edge rule for `Applebot-Extended`, `Google-Extended`, and `__usage_ai-training`. They never appear in logs.
+What the generator already handles, so you don't have to:
+
+- Matching is case-insensitive substring on the User-Agent header.
+- `/robots.txt` is never blocked, so a blocked bot can still read why.
+- Short or ambiguous names use a safer form: `diffbot/` (so `Diffbot-User`, a person opening the page, gets through), `ccbot/`, `yibot/`. `YaK` is robots.txt-only, because `yak` appears in ordinary words.
+- `Applebot-Extended`, `Google-Extended` and `__usage_ai-training` are left out. They are opt-out tokens and never crawl.
+- A name covered by a shorter one is dropped: `semrushbot` covers `SemrushBot-BA`, `webzio` covers `Webzio-Extended`.
+
+If the owner runs Semrush audits on their own site, the `semrushbot` match also blocks `SemrushBot-SI`, `-SWA` and `-ESI`. Add an exception for the audit bot they use before applying it.
 
 **Generic tools.** `curl`, `Wget`, `python-requests`, `Python-urllib`, `Go-http-client`, `Scrapy`, `HeadlessChrome`, and `Lightpanda` are library defaults that many scrapers leave unchanged. They are not in robots.txt because these tools do not read it. Blocking them at the edge also blocks the owner's own scripts, webhooks, health checks, and deploy hooks. Offer it, list what would break, and allow the owner's own paths and IPs first.
 
@@ -79,5 +88,10 @@ A famous name from an address outside the operator's published list is a spoof, 
 
 1. Read the live robots.txt. Add every default token that is missing, grouped as in [robots.txt](robots.txt). Do not delete an existing allow for a keep token. If a broad `User-agent: *` disallow would catch a keep token, add an explicit `Allow: /` group for it.
 2. Ask about the "Ask before removing" rows that apply.
-3. Add the edge block for the default crawlers.
+3. Add the edge block from [edge/](edge/) for the platform the site runs on.
 4. On a live site, show the diff first. Apply it when the owner says to.
+5. Run `node scripts/check.mjs https://<site> /` and report the result. It sends a request as each bot and shows leaks (a listed bot that still gets in) and anything kept that got blocked. Run it again after any change to robots.txt or the edge rule.
+
+## Keeping the list current
+
+Run `node scripts/sync.mjs` now and then. It lists names the community list [ai.robots.txt](https://github.com/ai-robots-txt/ai.robots.txt) has that botgate has not decided on yet, and source URLs in [sources.md](sources.md) that stopped answering. It changes nothing. Add a name only after reading the operator's own page, and put it in [bots.md](bots.md) and [robots.txt](robots.txt), then regenerate [edge/](edge/).

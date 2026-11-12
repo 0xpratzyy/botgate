@@ -34,6 +34,23 @@ Some blocks cost you something, so the skill names the cost and lets you choose.
 
 A name list does not close a site to every bot. Scrapers that send an ordinary browser user agent, such as Oxylabs, ScrapingBee, Zyte, and Bright Data's proxy network, publish no name to block. Those need rate limits or a bot-protection product. The skill says so instead of pretending.
 
+## On a real site
+
+[refs.video](https://refs.video) runs botgate since 2026-11-12. In the 24 hours before, with no name block, these were all let in:
+
+| Bot | Requests in 24 h | Now |
+|---|---|---|
+| Reflectionbot | 3,006 | blocked |
+| SemrushBot | 2,415 | blocked |
+| ClaudeBot (training) | 919 | blocked |
+| DotBot | 158 | blocked |
+| AhrefsBot | 19 | blocked |
+| meta-externalagent | 18 | blocked |
+
+Over the same 24 hours, the bots that send people or citations kept getting through, and still do: ChatGPT search 5,445 requests, Facebook link previews 5,197, Applebot 1,138, Meta AI search 847, Claude-User 597, Googlebot 111, Bing 68.
+
+What botgate did not fix there: the heaviest load came from a scraper fleet posing as ordinary Chrome, thousands of addresses. No name list can see that; a browser check on the busiest pages did.
+
 ## How it works
 
 When you ask your coding agent about AI crawlers, scrapers, robots.txt, or AEO, the skill tells it to:
@@ -44,12 +61,37 @@ When you ask your coding agent about AI crawlers, scrapers, robots.txt, or AEO, 
 4. Treat a known bot name from the wrong network as a spoof, checked against the operator's live IP list.
 5. Show you the diff before it changes a live site.
 
+## Edge rules, ready to paste
+
+robots.txt only stops polite bots. [skills/botgate/edge/](skills/botgate/edge/) has the same list as a block rule for the edge, generated from robots.txt so they never drift:
+
+- [cloudflare.txt](skills/botgate/edge/cloudflare.txt): a WAF custom-rule expression, any Cloudflare plan
+- [nginx.conf](skills/botgate/edge/nginx.conf): a `map` plus one `if`
+- [middleware.ts](skills/botgate/edge/middleware.ts): Next.js, on Vercel, Cloudflare or Node
+
+## Check it's working
+
+```sh
+node skills/botgate/scripts/check.mjs https://your-site.com
+```
+
+It requests the page as each bot and prints leaks (a blocked bot that still gets in), anything you're keeping that got blocked, and whether robots.txt lists every name. No dependencies, Node 18+.
+
+To see what's new since the list was written:
+
+```sh
+node skills/botgate/scripts/sync.mjs
+```
+
+It compares botgate with the community list [ai.robots.txt](https://github.com/ai-robots-txt/ai.robots.txt) and re-checks every source URL. It changes nothing.
+
 ## Files
 
 - [SKILL.md](skills/botgate/SKILL.md): the rules the agent follows.
 - [robots.txt](skills/botgate/robots.txt): the block list, ready to paste.
 - [bots.md](skills/botgate/bots.md): every bot, who runs it, and what blocking it costs.
 - [sources.md](skills/botgate/sources.md): operators' IP lists and signature keys for the spoof check.
+- [edge/](skills/botgate/edge/): the edge block rules, and [scripts/](skills/botgate/scripts/): `edge.mjs` (regenerates them), `check.mjs`, `sync.mjs`.
 
 ## Install
 
